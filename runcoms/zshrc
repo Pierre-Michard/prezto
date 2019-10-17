@@ -11,3 +11,39 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+export PATH=$PATH:$HOME/bin
+export EDITOR="'subl' -w"
+
+# tezos helpers
+export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
+alias tzalpha=$HOME/workspace/tezos/tezos/scripts/alphanet.sh
+alias tzzero=$HOME/workspace/tezos/tezos/scripts/zeronet.sh
+
+
+# opam configuration
+test -r /Users/pierre/.opam/opam-init/init.zsh && . /Users/pierre/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+# rbenv
+eval "$(rbenv init -)"
+
+
+export "GPG_TTY=$(tty)"
+GNUPGCONFIG=${GNUPGHOME:-"$HOME/.gnupg/gpg-agent.conf"}
+if grep -q enable-ssh-support "$GNUPGCONFIG"; then
+  unset SSH_AGENT_PID
+  export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
+fi
+
+export GITLAB_REGISTRY_TOKEN=$(gpg -d $HOME/.zprezto/gitlab_token.aes) 2>/dev/null
+
+# Postgres helpers
+alias pg_start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg_stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+
+alias docker_clean="docker volume rm $(docker volume ls -qf dangling=true) && docker rmi $(docker images | grep '^<none>' | awk '{print $3}')"
+
+alias dc="docker-compose"
+alias k="kubectl"
+alias be="bundle exec"
+
+alias unsecure-chrome="open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security"
