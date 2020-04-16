@@ -34,16 +34,28 @@ if grep -q enable-ssh-support "$GNUPGCONFIG"; then
   export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
 fi
 
+###export GITLAB_REGISTRY_TOKEN=vJgzBfx3hCnmQqZLevne
 export GITLAB_REGISTRY_TOKEN=$(gpg -d $HOME/.zprezto/gitlab_token.aes) 2>/dev/null
+export GITLAB_USERNAME=pierre_moneytrack
+export GITLAB_EMAIL=pierre@moneytrack.io
+export GITLAB_AUTH=`echo -n "$GITLAB_USERNAME:$GITLAB_REGISTRY_TOKEN" | base64`
+export DOCKER_CONFIG_JSON={\"auths\":{\"registry.gitlab.com\":{\"username\":\"$GITLAB_USERNAME\",\"password\":\"$GITLAB_REGISTRY_TOKEN\",\"email\":\"$GITLAB_EMAIL\",\"auth\":\"$GITLAB_AUTH\"}}}
+export HELM_EXPERIMENTAL_OCI=1
+
+alias kcreate_secret="kubectl create secret docker-registry regcred --docker-server=registry.gitlab.com --docker-username=$GITLAB_USERNAME --docker-password=$GITLAB_REGISTRY_TOKEN --docker-email=$GITLAB_EMAIL"
 
 # Postgres helpers
 alias pg_start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
 alias pg_stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
-
-alias docker_clean="docker volume rm $(docker volume ls -qf dangling=true) && docker rmi $(docker images | grep '^<none>' | awk '{print $3}')"
 
 alias dc="docker-compose"
 alias k="kubectl"
 alias be="bundle exec"
 
 alias unsecure-chrome="open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/pierre/Downloads/google-cloud-sdk 2/path.zsh.inc' ]; then . '/Users/pierre/Downloads/google-cloud-sdk 2/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/pierre/Downloads/google-cloud-sdk 2/completion.zsh.inc' ]; then . '/Users/pierre/Downloads/google-cloud-sdk 2/completion.zsh.inc'; fi
