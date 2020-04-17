@@ -34,7 +34,6 @@ if grep -q enable-ssh-support "$GNUPGCONFIG"; then
   export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
 fi
 
-###export GITLAB_REGISTRY_TOKEN=vJgzBfx3hCnmQqZLevne
 export GITLAB_REGISTRY_TOKEN=$(gpg -d $HOME/.zprezto/gitlab_token.aes) 2>/dev/null
 export GITLAB_USERNAME=pierre_moneytrack
 export GITLAB_EMAIL=pierre@moneytrack.io
